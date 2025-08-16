@@ -1,6 +1,10 @@
+
+
+
 .chats {
     max-width: 700px;
     overflow-y: scroll;
+    scrollbar-width: none;
     padding: 8rem;
 }
 
@@ -16,7 +20,7 @@
     font-size: 0.9rem;
 }
 
-.userMessage {
+.userMessages {
     background-color: #323232;
     padding: 10px 20px;
     border-radius: 14px;

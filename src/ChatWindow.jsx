@@ -1,98 +1,102 @@
-import "./ChatWindow.css";
-import Chat from "./Chat.jsx";
-import { MyContext } from "./MyContext.jsx";
+import "./chatWindow.css";
+import Chat from "./chat.jsx";
+import { myContext } from "./myContext.jsx";
 import { useContext, useState, useEffect } from "react";
+
 import {ScaleLoader} from "react-spinners";
 
-function ChatWindow() {
-    const {prompt, setPrompt, reply, setReply, currThreadId, setPrevChats, setNewChat} = useContext(MyContext);
-    const [loading, setLoading] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+function ChatWindow(){
+  
+    const{ promt, Setpromt, reply, Setreply, currThreadId, SetprevChats} = useContext(myContext);
+    const[loading, Setloading] = useState(false);
+    const[isOpen, setisOpen] = useState(false);
 
-    const getReply = async () => {
-        setLoading(true);
-        setNewChat(false);
 
-        console.log("message ", prompt, " threadId ", currThreadId);
+    
+    const getReply = async () =>{
+        Setloading(true);
+         console.log(promt);
+         console.log(currThreadId);
+
         const options = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                message: prompt,
+                message: promt,
                 threadId: currThreadId
             })
         };
 
-        try {
-            const response = await fetch("https://primegpt-backend.onrender.com/api/chat", options);
-            const res = await response.json();
+
+        try{
+                const response= await fetch("https://primegpt-backend.onrender.com.com/api/chat", options);
+                const res= await response.json();
             console.log(res);
-            setReply(res.reply);
-        } catch(err) {
+            Setreply(res.reply);
+        }
+        catch(err){
             console.log(err);
         }
-        setLoading(false);
+        Setloading(false);
+
     }
-
-    //Append new chat to prevChats
-    useEffect(() => {
-        if(prompt && reply) {
-            setPrevChats(prevChats => (
-                [...prevChats, {
-                    role: "user",
-                    content: prompt
-                },{
-                    role: "assistant",
-                    content: reply
-                }]
-            ));
-        }
-
-        setPrompt("");
-    }, [reply]);
+    
 
 
-    const handleProfileClick = () => {
-        setIsOpen(!isOpen);
+  useEffect(() => {
+    if (promt && reply) {
+    SetprevChats(prevChats  => [
+      ...prevChats ,
+      { role: "user", content: promt },
+      { role: "assistant", content: reply }
+    ]);
+     
+    Setpromt(""); // ✅ only reset if promt and reply were both set
+  }
+  }, [reply]);
+
+  const handleProfileClick = () => {
+        setisOpen(!isOpen);
     }
-
-    return (
+    
+    return(
         <div className="chatWindow">
             <div className="navbar">
-                <span>SigmaGPT <i className="fa-solid fa-chevron-down"></i></span>
-                <div className="userIconDiv" onClick={handleProfileClick}>
-                    <span className="userIcon"><i className="fa-solid fa-user"></i></span>
-                </div>
+                    <span>PrimeGPT <i className="fa-solid fa-chevron-down"></i></span>
+                      <div className="userIcondiv" onClick={handleProfileClick}>
+                      <span className="userIcon"> <i className="fa-solid fa-user"></i>  </span> 
+                      </div>
             </div>
-            {
-                isOpen && 
-                <div className="dropDown">
-                    <div className="dropDownItem"><i class="fa-solid fa-gear"></i> Settings</div>
-                    <div className="dropDownItem"><i class="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
-                    <div className="dropDownItem"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</div>
-                </div>
+            {     
+                   isOpen &&
+                 <div className="dropDown">
+                    <div className="dropDownItems" ><i className="fa-solid fa-cloud-arrow-up"></i>Upgrade Plan</div>
+                    <div className="dropDownItems"><i className="fa-solid fa-gear"></i>Settings</div>
+                     <div className="dropDownItems"><i className="fa-solid fa-arrow-right-from-bracket"></i>Log out </div>
+                   
+                 </div>
+
             }
             <Chat></Chat>
-
             <ScaleLoader color="#fff" loading={loading}>
+
             </ScaleLoader>
-            
             <div className="chatInput">
-                <div className="inputBox">
-                    <input placeholder="Ask anything"
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter'? getReply() : ''}
+                   <div className="inputBox">
+                    <input placeholder="Ask Anything"
+                    value ={promt}
+                    onChange={(e) => Setpromt(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' ? getReply() : ''}
                     >
-                           
+
                     </input>
-                    <div id="submit" onClick={getReply}><i className="fa-solid fa-paper-plane"></i></div>
-                </div>
-                <p className="info">
-                    PrimeGPT can make mistakes. Check important info. See Cookie Preferences.
-                </p>
+                    <div id="submit" onClick={getReply}><i className="fa-regular fa-paper-plane"></i> </div>
+                   </div>
+                   <p className="info">
+                        PrimeGPT can make mistakes. Check important info. See Cookie perferences.
+                   </p>
             </div>
         </div>
     )
