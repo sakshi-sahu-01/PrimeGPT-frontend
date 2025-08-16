@@ -1,6 +1,5 @@
 import './App.css'
-import Sidebar from "./sidebar.jsx";
-
+import Sidebar from "../sidebar.jsx"
 import ChatWindow from "./chatWindow.jsx"
 import {myContext } from "./myContext.jsx"
 import { useState } from 'react'

@@ -2,7 +2,7 @@ import "./sidebar.css";
 import { myContext } from "./myContext.jsx";
 import { useContext, useEffect, useState} from "react";
 import {v1 as uuidv1} from "uuid";
-import logo from './assets/logo.png';
+import logo from './assets/blacklogo.png';
 
 function Sidebar(){
 
