@@ -1,6 +1,7 @@
 
 import "./ChatWindow.css";
-import Chat from "./chat.jsx";
+import Chat from "../Chat.jsx"; // agar file ka naam Chat.jsx hai
+
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useState, useEffect } from "react";
 import {ScaleLoader} from "react-spinners";
@@ -19,6 +20,7 @@ function ChatWindow() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
+
             },
             body: JSON.stringify({
                 message: prompt,
