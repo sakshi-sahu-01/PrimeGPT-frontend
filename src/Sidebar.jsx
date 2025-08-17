@@ -1,50 +1,62 @@
 import "./Sidebar.css";
-import { useContext, useEffect } from "react";
-import { MyContext } from "./MyContext.jsx";
+import { myContext } from "./MyContext.jsx";
+import { useContext, useEffect, useState} from "react";
 import {v1 as uuidv1} from "uuid";
+import logo from './assets/logo.png';
 
-function Sidebar() {
-    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats} = useContext(MyContext);
+function Sidebar(){
 
-    const getAllThreads = async () => {
+
+    const {allThreads, SetAllThreads, currThreadId, SetnewChat, Setpromt, Setreply, SetcurrThreadId, SetprevChats} = useContext(myContext);
+
+    const [isOpen, setIsOpen] = useState(false); // ✅ Sidebar visibility
+
+    const toggleSidebar = () => setIsOpen(!isOpen);
+
+     const getAllThreads = async () => {
         try {
             const response = await fetch("https://primegpt-backend.onrender.com/api/thread");
             const res = await response.json();
             const filteredData = res.map(thread => ({threadId: thread.threadId, title: thread.title}));
             //console.log(filteredData);
-            setAllThreads(filteredData);
+            SetAllThreads(filteredData);
         } catch(err) {
             console.log(err);
         }
-    };
+       };
 
-    useEffect(() => {
+    
+     useEffect(() => {
         getAllThreads();
     }, [currThreadId])
 
 
     const createNewChat = () => {
-        setNewChat(true);
-        setPrompt("");
-        setReply(null);
-        setCurrThreadId(uuidv1());
-        setPrevChats([]);
+        SetnewChat(true);
+        Setpromt("");
+        Setreply(null);
+        SetcurrThreadId(uuidv1());
+        SetprevChats([]);
+
     }
 
+
     const changeThread = async (newThreadId) => {
-        setCurrThreadId(newThreadId);
+        SetcurrThreadId(newThreadId);
 
         try {
             const response = await fetch(`https://primegpt-backend.onrender.com/api/thread/${newThreadId}`);
             const res = await response.json();
             console.log(res);
-            setPrevChats(res);
-            setNewChat(false);
-            setReply(null);
+            SetprevChats(res);
+            console.log(res);
+            console.log("Threads from backend:", res);
+            SetnewChat(false);
+            Setreply(null);
         } catch(err) {
             console.log(err);
         }
-    }   
+    }  
 
     const deleteThread = async (threadId) => {
         try {
@@ -53,7 +65,7 @@ function Sidebar() {
             console.log(res);
 
             //updated threads re-render
-            setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
+            SetAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
 
             if(threadId === currThreadId) {
                 createNewChat();
@@ -64,20 +76,34 @@ function Sidebar() {
         }
     }
 
-    return (
-        <section className="sidebar">
+
+        
+    return(
+        <>
+               
+        <button className="menu-toggle" onClick={toggleSidebar}>
+            <i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+        </button>
+
+        {isOpen && <div className="sidebar-backdrop" onClick={toggleSidebar} />}
+        <section className={`sidebar ${isOpen ? "open" : ""}`}>
             <button onClick={createNewChat}>
-                <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo"></img>
+                <img src={logo} alt="gpt logo" className="logo" />
                 <span><i className="fa-solid fa-pen-to-square"></i></span>
             </button>
+        {/* // <section className="sidebar">
+        //     <button onClick={createNewChat} >
+        //         <img src="src/assets/logo.png" alt="gpt logo" className="logo"></img>
+        //         <span><i className="fa-solid fa-pen-to-square"></i></span>
+        //     </button> */}
 
 
             <ul className="history">
                 {
-                    allThreads?.map((thread, idx) => (
+                     allThreads?.map((thread, idx) => (
                         <li key={idx} 
                             onClick={(e) => changeThread(thread.threadId)}
-                            className={thread.threadId === currThreadId ? "highlighted": " "}
+                           className={thread.threadId === currThreadId ? "highlighted": " "}
                         >
                             {thread.title}
                             <i className="fa-solid fa-trash"
@@ -89,12 +115,16 @@ function Sidebar() {
                         </li>
                     ))
                 }
+                    
+                    
+                
             </ul>
  
             <div className="sign">
                 <p>By Sakshi Sahu &hearts;</p>
             </div>
         </section>
+        </>
     )
 }
 
