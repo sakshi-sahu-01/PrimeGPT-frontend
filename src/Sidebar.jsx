@@ -22,7 +22,6 @@ function Sidebar() {
         getAllThreads();
     }, [currThreadId])
 
-
     const createNewChat = () => {
         setNewChat(true);
         setPrompt("");
@@ -92,7 +91,7 @@ function Sidebar() {
             </ul>
  
             <div className="sign">
-                <p>By ApnaCollege &hearts;</p>
+                <p>By Sakshi Sahu &hearts;</p>
             </div>
         </section>
     )
